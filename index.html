@@ -4,87 +4,221 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ICEBLUE Bot Dashboard</title>
+<title>ICEBLUE Dashboard</title>
+
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;background:#080d18;color:#eaf3ff;
- font-family:Arial,sans-serif;padding:25px;
+  margin:0;padding:25px;
+  background:#080d18;color:#eaf3ff;
+  font-family:Arial,sans-serif;
 }
-main{max-width:850px;margin:auto}
-h1{color:#48aaff;letter-spacing:3px}
+main{max-width:950px;margin:auto}
+h1{color:#48aaff;letter-spacing:4px}
+h2,h3{color:#dceeff}
 .panel{
- background:#101c30;border:1px solid #203c5e;
- border-radius:14px;padding:20px;margin:16px 0;
+  background:#101c30;
+  border:1px solid #203c5e;
+  border-radius:14px;
+  padding:20px;
+  margin:17px 0;
 }
-input,button{
- padding:12px;border-radius:8px;border:1px solid #31547c;
- background:#0a1424;color:white;margin:5px 0;
+input,textarea,select{
+  width:100%;padding:12px;margin:7px 0;
+  background:#071323;color:white;
+  border:1px solid #31547c;
+  border-radius:8px;
+  font:inherit;
 }
-input{width:100%}
+textarea{resize:vertical}
 button{
- background:#087bd1;border:0;font-weight:bold;
- cursor:pointer;padding:12px 18px;
+  background:#087bd1;color:white;
+  border:0;border-radius:8px;
+  padding:12px 17px;margin:5px 4px 5px 0;
+  cursor:pointer;font-weight:bold;
 }
 button:hover{background:#159cff}
-button:disabled{opacity:.5}
-.small{color:#91a9c5;font-size:13px}
-#log{
- height:230px;overflow:auto;background:#07101d;
- border-radius:8px;padding:12px;font-size:13px;
- white-space:pre-wrap;
-}
+.secondary{background:#263b56}
+.danger{background:#9f3045}
+.small{font-size:13px;color:#91a9c5}
 .status{color:#ffbd58}
 .online{color:#52e6a0}
+#log{
+  height:210px;overflow:auto;
+  white-space:pre-wrap;
+  background:#07101d;border-radius:8px;
+  padding:12px;font-size:13px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+label{display:block;color:#b9d7f5;margin-top:10px}
+@media(max-width:600px){
+  body{padding:12px}
+  .grid{grid-template-columns:1fr}
+}
 </style>
 </head>
+
 <body>
 <main>
+
 <h1>❄ ICEBLUE</h1>
-<p class="small">Premium Multipurpose Yapper Bot</p>
+<p class="small">Premium Multipurpose Yapper Bot Dashboard</p>
 
+<!-- CONNECTION -->
 <div class="panel">
-<h3>Bot Connection</h3>
-<input id="token" type="password" placeholder="Paste your Yapper bot token">
-<input id="owner" placeholder="Your Yapper user ID (for owner commands)">
-<input id="welcome" placeholder="Welcome channel ID (optional)">
-<button id="connect" onclick="connectBot()">Connect ICEBLUE</button>
-<button onclick="disconnectBot()">Disconnect</button>
+<h2>🔌 Bot Connection</h2>
+
+<label>Bot Token</label>
+<input id="token" type="password"
+placeholder="Paste your Yapper bot token">
+
+<label>Owner User ID</label>
+<input id="owner" placeholder="Your user ID">
+
+<label>Welcome Channel ID</label>
+<input id="welcome" placeholder="Optional channel ID">
+
+<button id="connect" onclick="connectBot()">
+Connect ICEBLUE
+</button>
+
+<button class="danger" onclick="disconnectBot()">
+Disconnect
+</button>
+
 <p id="status" class="status">● Offline</p>
-<p class="small">Your token stays in this browser tab and is not saved in GitHub.</p>
+<p class="small">
+Your token is kept in memory only. Never put it in this
+GitHub file or share it with anyone.
+</p>
 </div>
 
+<!-- OVERVIEW -->
 <div class="panel">
-<h3>Dashboard</h3>
-<p id="botname">ICEBLUE — Not connected</p>
-<p>Features: Commands · Moderation · Economy · Auto Replies · Welcome Messages</p>
+<h2>📊 Overview</h2>
+<p id="botname">ICEBLUE — Disconnected</p>
+<p>❄️ Multipurpose bot</p>
+<p>🛡️ Honeypot protection enabled in this dashboard</p>
 </div>
 
+<!-- MESSAGE STUDIO -->
 <div class="panel">
-<h3>Activity Log</h3>
-<div id="log">ICEBLUE is waiting to connect...</div>
+<h2>💬 ICEBLUE Message Studio</h2>
+
+<label>Channel ID</label>
+<input id="sendChannel" placeholder="Channel ID to send to">
+
+<label>Message content</label>
+<textarea id="sendContent" rows="4" maxlength="2000"
+placeholder="Write your message here..."></textarea>
+
+<button onclick="dashboardSend(false)">
+Send Normal Message
+</button>
+
+<hr>
+
+<h3>❄️ Rich Embed Builder</h3>
+
+<label>Embed title</label>
+<input id="embedTitle" maxlength="256"
+placeholder="ICEBLUE Announcement">
+
+<label>Embed description</label>
+<textarea id="embedDescription" rows="5" maxlength="4096"
+placeholder="Write your embed description..."></textarea>
+
+<label>Embed image URL</label>
+<input id="embedImage" placeholder="https://...">
+
+<label>Embed link URL (optional)</label>
+<input id="embedURL" placeholder="https://...">
+
+<div class="grid">
+<div>
+<label>Author name (optional)</label>
+<input id="embedAuthor" placeholder="ICEBLUE">
+</div>
+<div>
+<label>Footer text (optional)</label>
+<input id="embedFooter" placeholder="ICEBLUE System">
+</div>
 </div>
 
+<label>Embed colour</label>
+<input id="embedColor" type="color" value="#168cff">
+
+<button onclick="dashboardSend(true)">
+❄️ Send Rich Embed
+</button>
+
+<p id="sendStatus" class="small">Ready to send.</p>
+</div>
+
+<!-- COMMANDS -->
 <div class="panel">
-<h3>Commands</h3>
+<h2>⚙️ Commands</h2>
 <p>/ping — Check bot status</p>
 <p>/help — Show commands</p>
 <p>/roll — Roll a dice</p>
-<p>/balance — Check coins</p>
-<p>/daily — Collect 250 coins</p>
+<p>/balance — Check your coins</p>
+<p>/daily — Collect daily coins</p>
 <p>/work — Earn coins</p>
 <p>/pay — Pay another member</p>
 <p>/say — Make ICEBLUE speak</p>
-<p>/setreply — Create an auto response</p>
-<p>/kick, /ban, /timeout — Moderation</p>
-<p class="small">The bot needs the appropriate server permissions for moderation.</p>
+<p>/setreply — Create an automatic reply</p>
+<p>/kick — Kick a member</p>
+<p>/ban — Ban a member</p>
+<p>/timeout — Timeout a member</p>
 </div>
+
+<!-- HONEYPOT -->
+<div class="panel">
+<h2>🛡️ Honeypot Protection</h2>
+<p>Channel: <b>#Honeypot</b></p>
+<p class="small" id="honeypotStatus">
+Configured channel ID:
+00f74306-43fb-456c-b320-5b2aca9f8c0d
+</p>
+<p>Any message received in this channel will trigger a kick.</p>
+</div>
+
+<!-- ACTIVITY -->
+<div class="panel">
+<h2>📋 Activity Log</h2>
+<div id="log">ICEBLUE is waiting to connect...</div>
+<button class="secondary" onclick="clearLog()">Clear Log</button>
+</div>
+
 </main>
 
 <script>
+"use strict";
+
 const API="https://www.yapper.website/api/bot/v1";
- const HONEYPOT_CHANNEL_ID = "00f74306-43fb-456c-b320-5b2aca9f8c0d";
- 
+
+const HONEYPOT_CHANNEL_ID=
+"00f74306-43fb-456c-b320-5b2aca9f8c0d";
+
+const commands=[
+  ["ping","Check ICEBLUE status"],
+  ["help","Show commands"],
+  ["roll","Roll a dice"],
+  ["balance","Check your wallet"],
+  ["daily","Collect daily coins"],
+  ["work","Earn coins"],
+  ["pay","Pay another member"],
+  ["say","Make ICEBLUE say something"],
+  ["setreply","Create a custom auto response"],
+  ["kick","Kick a member"],
+  ["ban","Ban a member"],
+  ["timeout","Timeout a member"]
+];
+
 let token="";
 let owner="";
 let welcome="";
@@ -94,313 +228,566 @@ let wallets={};
 let daily={};
 let replies={};
 
-function log(text){
- const box=document.getElementById("log");
- box.textContent+="\n"+new Date().toLocaleTimeString()+"  "+text;
- box.scrollTop=box.scrollHeight;
+function log(message){
+  const box=document.getElementById("log");
+  box.textContent+=
+    "\n"+new Date().toLocaleTimeString()+"  "+message;
+  box.scrollTop=box.scrollHeight;
 }
 
-function status(text,online=false){
- const el=document.getElementById("status");
- el.textContent="● "+text;
- el.className=online?"online":"status";
+function clearLog(){
+  document.getElementById("log").textContent=
+    "Activity log cleared.";
 }
 
-async function api(method,path,body){
- const response=await fetch(API+path,{
-  method,
-  headers:{
-   Authorization:"Bot "+token,
-   "Content-Type":"application/json"
-  },
-  ...(body===undefined?{}:{body:JSON.stringify(body)})
- });
+function setStatus(message,online=false){
+  const el=document.getElementById("status");
+  el.textContent="● "+message;
+  el.className=online?"online":"status";
+}
 
- const text=await response.text();
- let result={};
- try{result=text?JSON.parse(text):{}}
- catch{result={error:text}}
+async function api(method,endpoint,body){
+  const response=await fetch(API+endpoint,{
+    method,
+    headers:{
+      Authorization:"Bot "+token,
+      "Content-Type":"application/json"
+    },
+    ...(body===undefined?{}:{
+      body:JSON.stringify(body)
+    })
+  });
 
- if(!response.ok){
-  throw new Error("API "+response.status+": "+(result.error||text));
- }
- return result;
+  const text=await response.text();
+  let result={};
+
+  try{
+    result=text?JSON.parse(text):{};
+  }catch{
+    result={error:text};
+  }
+
+  if(!response.ok){
+    throw new Error(
+      "API "+response.status+": "+
+      (result.error||text||"Unknown error")
+    );
+  }
+
+  return result;
 }
 
 async function send(channel,content,replyTo){
- if(!channel)return;
- return api("POST","/channels/"+encodeURIComponent(channel)+"/messages",{
-  content:String(content).slice(0,2000),
-  ...(replyTo?{reply_to:replyTo}:{})
- });
+  if(!channel)throw new Error("Missing channel ID.");
+
+  return api(
+    "POST",
+    "/channels/"+encodeURIComponent(channel)+"/messages",
+    {
+      content:String(content).slice(0,2000),
+      ...(replyTo?{reply_to:replyTo}:{})
+    }
+  );
 }
 
 function reply(msg,text){
- return send(msg.channel_id,text,msg.id);
+  return send(msg.channel_id,text,msg.id);
 }
 
 function wallet(id){
- return wallets[id]||0;
+  return Number(wallets[id]||0);
+}
+
+function saveWallets(){
+  localStorage.setItem(
+    "iceblue-wallets",
+    JSON.stringify(wallets)
+  );
 }
 
 function addCoins(id,amount){
- wallets[id]=wallet(id)+amount;
- localStorage.setItem("iceblue-wallets",JSON.stringify(wallets));
+  wallets[id]=wallet(id)+amount;
+  saveWallets();
 }
 
 function getMention(text){
- return text.match(/<@([^>]+)>/)?.[1];
+  return text.match(/<@([^>]+)>/)?.[1];
 }
 
 async function moderate(msg,action,target,minutes=10){
- if(!target||!msg.server_id)
-  return reply(msg,"Usage: /"+action+" @user");
+  if(!target||!msg.server_id){
+    return reply(msg,"Usage: /"+action+" @user");
+  }
 
- const routes={
-  kick:["/servers/"+msg.server_id+"/kick",{user_id:target}],
-  ban:["/servers/"+msg.server_id+"/bans",{user_id:target}],
-  timeout:["/servers/"+msg.server_id+"/timeouts",{
-   user_id:target,minutes,reason:"ICEBLUE moderation"
-  }]
- };
+  const routes={
+    kick:[
+      "/servers/"+msg.server_id+"/kick",
+      {user_id:target}
+    ],
+    ban:[
+      "/servers/"+msg.server_id+"/bans",
+      {user_id:target}
+    ],
+    timeout:[
+      "/servers/"+msg.server_id+"/timeouts",
+      {
+        user_id:target,
+        minutes,
+        reason:"ICEBLUE moderation"
+      }
+    ]
+  };
 
- await api("POST",routes[action][0],routes[action][1]);
- await reply(msg,"🛡️ "+action.toUpperCase()+" completed.");
+  await api("POST",routes[action][0],routes[action][1]);
+  await reply(msg,"🛡️ "+action.toUpperCase()+" completed.");
+  log("Moderation: "+action+" on "+target);
 }
 
 async function handle(msg){
- if(!msg.channel_id||!msg.author_id)return;
+  if(!msg.channel_id||!msg.author_id)return;
 
- const command=msg.command;
- const args=msg.args||"";
- const user=msg.author_id;
- const parts=args.trim().split(/\s+/);
+  const command=msg.command;
+  const args=msg.args||"";
+  const user=msg.author_id;
+  const parts=args.trim().split(/\s+/);
 
- if(!command){
-  const content=(msg.content||"").toLowerCase().trim();
+  if(!command){
+    const content=(msg.content||"").toLowerCase().trim();
 
-  for(const [keyword,response] of Object.entries(replies)){
-   if(content.includes(keyword))return reply(msg,response);
+    for(const [keyword,response] of Object.entries(replies)){
+      if(content.includes(keyword)){
+        return reply(msg,response);
+      }
+    }
+
+    if(content==="hello"||content==="hi"){
+      return reply(msg,"❄️ Hey there! Welcome to ICEBLUE!");
+    }
+
+    return;
   }
 
-  if(content==="hi"||content==="hello")
-   return reply(msg,"❄️ Hey there! Welcome to ICEBLUE!");
-  return;
- }
+  switch(command){
 
- switch(command){
- case "ping":
-  return reply(msg,"🏓 Pong! ICEBLUE is online!");
+    case "ping":
+      return reply(msg,"🏓 Pong! ICEBLUE is online!");
 
- case "help":
-  return reply(msg,
-   "❄️ **ICEBLUE COMMANDS**\n"+
-   "/ping /help /roll /balance /daily /work /pay /say\n"+
-   "/setreply /kick /ban /timeout"
-  );
-
- case "roll":{
-  const n=Number(parts[0]);
-  const sides=Number.isSafeInteger(n)&&n>=2&&n<=1000?n:6;
-  return reply(msg,"🎲 You rolled **"+(1+Math.floor(Math.random()*sides))+"**!");
- }
-
- case "say":
-  if(!args.trim())return reply(msg,"Usage: /say hello");
-  return reply(msg,args.slice(0,1800));
-
- case "balance":
-  return reply(msg,"💰 You have **"+wallet(user)+" coins**.");
-
- case "daily":{
-  const today=new Date().toISOString().slice(0,10);
-  if(daily[user]===today)
-   return reply(msg,"You already collected today's reward!");
-
-  daily[user]=today;
-  localStorage.setItem("iceblue-daily",JSON.stringify(daily));
-  addCoins(user,250);
-  return reply(msg,"🎁 You collected **250 coins**!");
- }
-
- case "work":{
-  const amount=50+Math.floor(Math.random()*101);
-  addCoins(user,amount);
-  return reply(msg,"💼 You earned **"+amount+" coins**!");
- }
-
- case "pay":{
-  const target=getMention(args);
-  const amounts=args.match(/\b\d+\b/g);
-  if(!target||!amounts)
-   return reply(msg,"Usage: /pay @user 100");
-
-  const amount=Number(amounts.at(-1));
-  if(target===user||!Number.isSafeInteger(amount)||amount<=0)
-   return reply(msg,"Invalid payment.");
-  if(wallet(user)<amount)
-   return reply(msg,"You don't have enough coins.");
-
-  addCoins(user,-amount);
-  addCoins(target,amount);
-  return reply(msg,"💸 Payment of **"+amount+" coins** sent!");
- }
-
- case "setreply":{
-  if(owner!==user)
-   return reply(msg,"Only the bot owner can use this command.");
-
-  const split=args.split("|");
-  if(split.length<2)
-   return reply(msg,"Usage: /setreply keyword | response");
-
-  const keyword=split[0].trim().toLowerCase();
-  const response=split.slice(1).join("|").trim();
-  if(!keyword||!response)
-   return reply(msg,"Provide a keyword and response.");
-
-  replies[keyword]=response.slice(0,1000);
-  localStorage.setItem("iceblue-replies",JSON.stringify(replies));
-  return reply(msg,"✅ Auto response saved!");
- }
-
- case "kick":
- case "ban":
-  return moderate(msg,command,getMention(args));
-
- case "timeout":{
-  const target=getMention(args);
-  const nums=args.match(/\b\d+\b/g);
-  const minutes=Math.max(1,Math.min(40320,Number(nums?.at(-1)||10)));
-  return moderate(msg,"timeout",target,minutes);
- }
- }
-}
-
-async function connectBot(){
- if(running)return;
-
- token=document.getElementById("token").value.trim();
- owner=document.getElementById("owner").value.trim();
- welcome=document.getElementById("welcome").value.trim();
-
- if(!token){
-  alert("Enter your bot token first.");
-  return;
- }
-
- try{
-  wallets=JSON.parse(localStorage.getItem("iceblue-wallets")||"{}");
-  daily=JSON.parse(localStorage.getItem("iceblue-daily")||"{}");
-  replies=JSON.parse(localStorage.getItem("iceblue-replies")||"{}");
-
-  await api("GET","/me");
-
-  const commands=[
-   ["ping","Check ICEBLUE status"],
-   ["help","Show commands"],
-   ["roll","Roll a dice"],
-   ["balance","Check your wallet"],
-   ["daily","Collect daily coins"],
-   ["work","Earn coins"],
-   ["pay","Pay another member"],
-   ["say","Make ICEBLUE say something"],
-   ["setreply","Create an auto response"],
-   ["kick","Kick a member"],
-   ["ban","Ban a member"],
-   ["timeout","Timeout a member"]
-  ];
-
-  await api("PUT","/commands",{
-   commands:commands.map(([name,description])=>({name,description}))
-  });
-
-  await api("PATCH","/me",{
-   display_name:"ICEBLUE",
-   bio:"❄️ Your premium multipurpose Yapper bot."
-  });
-
-  const initial=await api("GET","/events?after=0&wait=0");
-  last=initial.last||0;
-
-  await api("PUT","/me/status",{
-   status:"online",
-   activity:"ICEBLUE Premium"
-  });
-
-  running=true;
-  status("Online",true);
-  document.getElementById("botname").textContent="❄️ ICEBLUE — Connected";
-  log("ICEBLUE connected successfully!");
-  poll();
-
- }catch(error){
-  running=false;
-  status("Connection failed");
-  log("ERROR: "+error.message);
- }
-}
-
-async function poll(){
- while(running){
-  try{
-   const result=await api("GET","/events?after="+last+"&wait=25");
-
-   for(const event of result.events||[]){
-    last=event.id;
-
-    try{
-   if(event.type==="message"){
-  const msg = event.data;
-
-  if(msg.channel_id === HONEYPOT_CHANNEL_ID && !msg.author_bot){
-    if(msg.server_id && msg.author_id){
-      await api(
-        "POST",
-        "/servers/"+encodeURIComponent(msg.server_id)+"/kick",
-        {user_id:msg.author_id}
+    case "help":
+      return reply(
+        msg,
+        "**❄️ ICEBLUE COMMANDS**\n"+
+        commands.map(([name,description])=>
+          `/${name} — ${description}`
+        ).join("\n")
       );
 
-      log("🛡️ HONEYPOT: Kicked "+msg.author_id);
-    }
-    continue;
-  }
+    case "roll":{
+      const n=Number(parts[0]);
+      const sides=
+        Number.isSafeInteger(n)&&n>=2&&n<=1000?n:6;
 
-  await handle(msg);
-  log("Message received: "+(msg.content||"command"));
+      return reply(
+        msg,
+        "🎲 You rolled **"+
+        (1+Math.floor(Math.random()*sides))+
+        "**!"
+      );
+    }
+
+    case "say":
+      if(!args.trim())return reply(msg,"Usage: /say hello");
+      return reply(msg,args.slice(0,1800));
+
+    case "balance":
+      return reply(
+        msg,
+        "💰 You have **"+wallet(user)+" coins**."
+      );
+
+    case "daily":{
+      const today=new Date().toISOString().slice(0,10);
+
+      if(daily[user]===today){
+        return reply(msg,"You already collected today's reward!");
+      }
+
+      daily[user]=today;
+
+      localStorage.setItem(
+        "iceblue-daily",
+        JSON.stringify(daily)
+      );
+
+      addCoins(user,250);
+
+      return reply(msg,"🎁 You collected **250 coins**!");
+    }
+
+    case "work":{
+      const amount=50+Math.floor(Math.random()*101);
+      addCoins(user,amount);
+
+      return reply(
+        msg,
+        "💼 You earned **"+amount+" coins**!"
+      );
+    }
+
+    case "pay":{
+      const target=getMention(args);
+      const amountMatch=args.match(/(?:^|\s)(\d+)\s*$/);
+
+      if(!target||!amountMatch){
+        return reply(msg,"Usage: /pay @user 100");
+      }
+
+      const amount=Number(amountMatch[1]);
+
+      if(target===user||!Number.isSafeInteger(amount)||amount<=0){
+        return reply(msg,"Invalid payment.");
+      }
+
+      if(wallet(user)<amount){
+        return reply(msg,"You don't have enough coins.");
+      }
+
+      addCoins(user,-amount);
+      addCoins(target,amount);
+
+      return reply(
+        msg,
+        "💸 Sent **"+amount+" coins**!"
+      );
+    }
+
+    case "setreply":{
+      if(!owner||owner!==user){
+        return reply(msg,"Only the bot owner can create auto responses.");
+      }
+
+      const split=args.split("|");
+
+      if(split.length<2){
+        return reply(
+          msg,
+          "Usage: /setreply keyword | response"
+        );
+      }
+
+      const keyword=split[0].trim().toLowerCase();
+      const response=split.slice(1).join("|").trim();
+
+      if(!keyword||!response){
+        return reply(msg,"Provide a keyword and response.");
+      }
+
+      replies[keyword]=response.slice(0,1000);
+
+      localStorage.setItem(
+        "iceblue-replies",
+        JSON.stringify(replies)
+      );
+
+      return reply(
+        msg,
+        "✅ Auto response saved for **"+keyword+"**."
+      );
+    }
+
+    case "kick":
+    case "ban":
+      return moderate(msg,command,getMention(args));
+
+    case "timeout":{
+      const target=getMention(args);
+      const match=args.match(/(\d+)\s*$/);
+      const minutes=Math.max(
+        1,
+        Math.min(40320,Number(match?.[1]||10))
+      );
+
+      return moderate(msg,"timeout",target,minutes);
+    }
+  }
 }
 
-     if(event.type==="member_join"&&welcome){
-      await send(welcome,"❄️ Welcome <@"+event.data.user_id+"> to the server!");
-      log(event.data.username+" joined.");
-     }
+// MESSAGE STUDIO
+async function dashboardSend(asEmbed){
+  const channel=
+    document.getElementById("sendChannel").value.trim();
 
-     if(event.type==="member_leave"){
-      log(event.data.username+" left the server.");
-     }
-    }catch(error){
-     log("Event error: "+error.message);
+  const content=
+    document.getElementById("sendContent").value.trim();
+
+  const title=
+    document.getElementById("embedTitle").value.trim();
+
+  const description=
+    document.getElementById("embedDescription").value.trim();
+
+  const image=
+    document.getElementById("embedImage").value.trim();
+
+  const url=
+    document.getElementById("embedURL").value.trim();
+
+  const author=
+    document.getElementById("embedAuthor").value.trim();
+
+  const footer=
+    document.getElementById("embedFooter").value.trim();
+
+  const color=
+    document.getElementById("embedColor").value;
+
+  const status=document.getElementById("sendStatus");
+
+  if(!running||!token){
+    status.textContent="❌ Connect ICEBLUE first.";
+    return;
+  }
+
+  if(!channel){
+    status.textContent="❌ Enter a channel ID.";
+    return;
+  }
+
+  if(!asEmbed&&!content){
+    status.textContent="❌ Write a message first.";
+    return;
+  }
+
+  if(asEmbed&&!title&&!description){
+    status.textContent="❌ Add an embed title or description.";
+    return;
+  }
+
+  const embed={color};
+
+  if(title)embed.title=title;
+  if(description)embed.description=description;
+  if(url)embed.url=url;
+  if(author)embed.author={name:author};
+  if(footer)embed.footer={text:footer};
+
+  if(image){
+    try{
+      const parsed=new URL(image);
+      const allowed=[
+        "www.yapper.website",
+        "yapper.website",
+        "i.imgur.com",
+        "media.tenor.com",
+        "media.giphy.com",
+        "upload.wikimedia.org",
+        "raw.githubusercontent.com",
+        "avatars.githubusercontent.com",
+        "i.ytimg.com",
+        "cdn.discordapp.com",
+        "pbs.twimg.com",
+        "i.redd.it"
+      ];
+
+      if(parsed.protocol!=="https:"||
+         !allowed.includes(parsed.hostname)){
+        status.textContent=
+          "❌ Use HTTPS and an image host supported by Yapper.";
+        return;
+      }
+
+      embed.image={url:image};
+    }catch{
+      status.textContent="❌ Invalid image URL.";
+      return;
     }
-   }
+  }
 
-   last=Math.max(last,result.last||0);
+  const payload={};
+
+  if(content)payload.content=content;
+  if(asEmbed)payload.embeds=[embed];
+
+  status.textContent="Sending...";
+
+  try{
+    await api(
+      "POST",
+      "/channels/"+encodeURIComponent(channel)+"/messages",
+      payload
+    );
+
+    status.textContent="✅ Message sent!";
+    log("📨 Sent message to channel "+channel);
+
+    document.getElementById("sendContent").value="";
 
   }catch(error){
-   log("Connection error: "+error.message);
-   await new Promise(resolve=>setTimeout(resolve,5000));
+    status.textContent="❌ "+error.message;
+    log("Message send error: "+error.message);
   }
- }
 }
 
+// CONNECT
+async function connectBot(){
+  if(running)return;
+
+  token=document.getElementById("token").value.trim();
+  owner=document.getElementById("owner").value.trim();
+  welcome=document.getElementById("welcome").value.trim();
+
+  if(!token){
+    alert("Enter your Yapper bot token.");
+    return;
+  }
+
+  try{
+    wallets=JSON.parse(
+      localStorage.getItem("iceblue-wallets")||"{}"
+    );
+
+    daily=JSON.parse(
+      localStorage.getItem("iceblue-daily")||"{}"
+    );
+
+    replies=JSON.parse(
+      localStorage.getItem("iceblue-replies")||"{}"
+    );
+
+    await api("GET","/me");
+
+    await api("PUT","/commands",{
+      commands:commands.map(([name,description])=>({
+        name,
+        description
+      }))
+    });
+
+    await api("PATCH","/me",{
+      display_name:"ICEBLUE",
+      bio:"❄️ Your premium multipurpose Yapper bot."
+    });
+
+    const initial=await api(
+      "GET",
+      "/events?after=0&wait=0"
+    );
+
+    last=initial.last||0;
+
+    await api("PUT","/me/status",{
+      status:"online",
+      activity:"ICEBLUE Premium"
+    });
+
+    running=true;
+
+    setStatus("Online",true);
+
+    document.getElementById("botname").textContent=
+      "❄️ ICEBLUE — Connected";
+
+    log("ICEBLUE connected successfully!");
+    poll();
+
+  }catch(error){
+    running=false;
+    token="";
+    setStatus("Connection failed");
+    log("Connection error: "+error.message);
+  }
+}
+
+// EVENT LOOP
+async function poll(){
+  while(running){
+    try{
+      const result=await api(
+        "GET",
+        "/events?after="+last+"&wait=25"
+      );
+
+      for(const event of result.events||[]){
+        last=event.id;
+
+        try{
+          if(event.type==="message"){
+            const msg=event.data;
+
+            // HONEYPOT AUTO-KICK
+            if(msg.channel_id===HONEYPOT_CHANNEL_ID){
+              if(msg.server_id&&msg.author_id){
+                await api(
+                  "POST",
+                  "/servers/"+
+                  encodeURIComponent(msg.server_id)+
+                  "/kick",
+                  {user_id:msg.author_id}
+                );
+
+                log(
+                  "🛡️ HONEYPOT: Kicked "+msg.author_id
+                );
+              }
+
+              continue;
+            }
+
+            await handle(msg);
+
+            log(
+              "Message received: "+
+              (msg.content||"command")
+            );
+          }
+
+          if(event.type==="member_join"&&welcome){
+            await send(
+              welcome,
+              "❄️ Welcome <@"+
+              event.data.user_id+
+              "> to the server!"
+            );
+
+            log(event.data.username+" joined.");
+          }
+
+          if(event.type==="member_leave"){
+            log(event.data.username+" left the server.");
+          }
+
+        }catch(error){
+          log("Event error: "+error.message);
+        }
+      }
+
+      last=Math.max(last,result.last||0);
+
+    }catch(error){
+      log("Connection error: "+error.message);
+
+      await new Promise(resolve=>
+        setTimeout(resolve,5000)
+      );
+    }
+  }
+}
+
+// DISCONNECT
 function disconnectBot(){
- running=false;
- token="";
- document.getElementById("token").value="";
- status("Offline");
- document.getElementById("botname").textContent="ICEBLUE — Disconnected";
- log("Bot disconnected.");
-}
+  running=false;
+  token="";
+  owner="";
+  welcome="";
 
+  document.getElementById("token").value="";
+
+  setStatus("Offline");
+
+  document.getElementById("botname").textContent=
+    "ICEBLUE — Disconnected";
+
+  log("ICEBLUE disconnected.");
+}
 </script>
 </body>
 </html>
