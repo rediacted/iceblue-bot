@@ -83,7 +83,8 @@ button:disabled{opacity:.5}
 
 <script>
 const API="https://www.yapper.website/api/bot/v1";
-
+ const HONEYPOT_CHANNEL_ID = "00f74306-43fb-456c-b320-5b2aca9f8c0d";
+ 
 let token="";
 let owner="";
 let welcome="";
@@ -349,10 +350,25 @@ async function poll(){
     last=event.id;
 
     try{
-     if(event.type==="message"){
-      await handle(event.data);
-      log("Message received: "+(event.data.content||"command"));
-     }
+   if(event.type==="message"){
+  const msg = event.data;
+
+  if(msg.channel_id === HONEYPOT_CHANNEL_ID && !msg.author_bot){
+    if(msg.server_id && msg.author_id){
+      await api(
+        "POST",
+        "/servers/"+encodeURIComponent(msg.server_id)+"/kick",
+        {user_id:msg.author_id}
+      );
+
+      log("🛡️ HONEYPOT: Kicked "+msg.author_id);
+    }
+    continue;
+  }
+
+  await handle(msg);
+  log("Message received: "+(msg.content||"command"));
+}
 
      if(event.type==="member_join"&&welcome){
       await send(welcome,"❄️ Welcome <@"+event.data.user_id+"> to the server!");
